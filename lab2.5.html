@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 2.5 — Фотогалерея</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f4f4;
+            color: #222;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        #gallery img {
+            width: 200px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #gallery img:hover {
+            transform: scale(1.04);
+        }
+
+        #mainImage {
+            display: block;
+            max-width: 100%;
+            width: 500px;
+            max-height: 350px;
+            object-fit: contain;
+            margin: 15px auto;
+            border-radius: 8px;
+        }
+
+        #imageInfo {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+        }
+
+        input[type="file"] {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Лабораторна робота 2.5</h1>
+    <h2>Розробка сценарію фотогалереї</h2>
+
+    <!-- Завдання 1 -->
+    <section>
+        <h3>Завдання 1. Створення базової структури галереї</h3>
+        <div id="gallery"></div>
+    </section>
+
+    <!-- Завдання 2 -->
+    <section>
+        <h3>Завдання 2. Додавання зображень</h3>
+
+        <input type="file" id="imageInput" accept="image/*" multiple>
+        <button id="addImages">Додати зображення</button>
+
+        <p>Вибери зображення на комп'ютері, щоб додати їх до галереї.</p>
+    </section>
+
+    <!-- Завдання 3 -->
+    <section>
+        <h3>Завдання 3. Опис зображень</h3>
+        <p>Наведи курсор на зображення, щоб побачити його опис.</p>
+    </section>
+
+    <!-- Завдання 4 -->
+    <section>
+        <h3>Завдання 4. Попередній перегляд зображення</h3>
+
+        <img
+            id="mainImage"
+            src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800"
+            alt="Попередній перегляд"
+        >
+
+        <p id="imageInfo">Натисни на зображення в галереї для перегляду.</p>
+    </section>
+
+    <!-- Завдання 5 -->
+    <section>
+        <h3>Завдання 5. Очищення галереї</h3>
+        <button id="clearGallery">Очистити галерею</button>
+    </section>
+
+    <!-- Завдання 6 -->
+    <section>
+        <h3>Завдання 6. Сортування зображень</h3>
+        <button id="sortImages">Сортувати за алфавітом</button>
+    </section>
+
+    <!-- Завдання 7 -->
+    <section>
+        <h3>Завдання 7. Використання jQuery</h3>
+        <button id="jqueryGallery">Додати демонстраційні зображення через jQuery</button>
+    </section>
+
+    <!-- Завдання 8 -->
+    <section>
+        <h3>Завдання 8. Збереження зображень у Local Storage</h3>
+        <button id="saveImages">Зберегти галерею</button>
+        <p id="saveStatus"></p>
+    </section>
+
+    <!-- Завдання 9 -->
+    <section>
+        <h3>Завдання 9. Відображення збережених зображень</h3>
+        <button id="loadImages">Завантажити збережену галерею</button>
+    </section>
+
+    <script>
+        const gallery = document.getElementById("gallery");
+        const mainImage = document.getElementById("mainImage");
+        const imageInfo = document.getElementById("imageInfo");
+
+        let images = [
+            {
+                src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=500",
+                description: "Гарний пейзаж природи",
+                name: "Пейзаж"
+            },
+            {
+                src: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=500",
+                description: "Гірське озеро",
+                name: "Гори"
+            },
+            {
+                src: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500",
+                description: "Ліс і озеро",
+                name: "Ліс"
+            }
+        ];
+
+        // Створення одного елемента галереї
+        function createImageElement(item) {
+            const img = document.createElement("img");
+
+            img.src = item.src;
+            img.alt = item.description;
+            img.title = item.description;
+
+            img.onclick = function() {
+                mainImage.src = item.src;
+                mainImage.alt = item.description;
+                imageInfo.textContent = item.description;
+            };
+
+            return img;
+        }
+
+        // Завдання 1, 2, 3 і 4: відображення зображень
+        function renderGallery() {
+            gallery.innerHTML = "";
+
+            images.forEach(item => {
+                gallery.appendChild(createImageElement(item));
+            });
+        }
+
+        renderGallery();
+
+        // Завдання 2: додавання зображень із комп'ютера
+        document.getElementById("addImages").onclick = function() {
+            const input = document.getElementById("imageInput");
+            const files = Array.from(input.files);
+
+            files.forEach(file => {
+                if (!file.type.startsWith("image/")) {
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    images.push({
+                        src: event.target.result,
+                        description: file.name,
+                        name: file.name
+                    });
+
+                    renderGallery();
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            input.value = "";
+        };
+
+        // Завдання 5: очищення галереї
+        document.getElementById("clearGallery").onclick = function() {
+            images = [];
+            gallery.innerHTML = "";
+            mainImage.removeAttribute("src");
+            imageInfo.textContent = "Галерею очищено.";
+
+            localStorage.removeItem("galleryImages");
+        };
+
+        // Завдання 6: сортування за алфавітом
+        document.getElementById("sortImages").onclick = function() {
+            images.sort((a, b) => a.name.localeCompare(b.name, "uk"));
+            renderGallery();
+        };
+
+        // Завдання 7: додавання зображень через jQuery
+        $("#jqueryGallery").click(function() {
+            const demoImages = [
+                {
+                    src: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=500",
+                    description: "Сонячний ранок",
+                    name: "Ранок"
+                },
+                {
+                    src: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=500",
+                    description: "Морські хвилі",
+                    name: "Море"
+                }
+            ];
+
+            demoImages.forEach(item => {
+                images.push(item);
+
+                const img = $("<img>")
+                    .attr("src", item.src)
+                    .attr("alt", item.description)
+                    .attr("title", item.description);
+
+                img.on("click", function() {
+                    $("#mainImage").attr("src", item.src);
+                    $("#mainImage").attr("alt", item.description);
+                    $("#imageInfo").text(item.description);
+                });
+
+                $("#gallery").append(img);
+            });
+        });
+
+        // Завдання 8: збереження зображень у Local Storage
+        document.getElementById("saveImages").onclick = function() {
+            try {
+                localStorage.setItem("galleryImages", JSON.stringify(images));
+                document.getElementById("saveStatus").textContent =
+                    "Галерею збережено!";
+            } catch (error) {
+                document.getElementById("saveStatus").textContent =
+                    "Не вдалося зберегти галерею. Можливо, перевищено ліміт Local Storage.";
+            }
+        };
+
+        // Завдання 9: завантаження збережених зображень
+        document.getElementById("loadImages").onclick = function() {
+            try {
+                const savedImages = JSON.parse(
+                    localStorage.getItem("galleryImages")
+                );
+
+                if (Array.isArray(savedImages)) {
+                    images = savedImages;
+                    renderGallery();
+                    imageInfo.textContent = "Збережену галерею завантажено.";
+                } else {
+                    imageInfo.textContent = "Збереженої галереї немає.";
+                }
+            } catch (error) {
+                imageInfo.textContent = "Не вдалося завантажити галерею.";
+            }
+        };
+    </script>
+
+</body>
+</html>
